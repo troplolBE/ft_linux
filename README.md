@@ -24,3 +24,9 @@ Checklist before starting LFS on a VM:
    - mount -v -t ext4 /dev/<xxx> $LFS (mount lfs partition)
    - /sbin/swapon /dev/<xxx> (mount swap partition)
    - mount -v -t vfat /dev/<xxx> $LFS/boot (mount boot partition)
+- When rebooting after Chapter 7, you also need to execute the commands on chapter 7.3 and 7.4:
+   - `mount -v --bind /dev $LFS/dev`
+   - mount -v --bind /dev/pts $LFS/dev/pts
+   - mount -vt proc proc $LFS/proc
+   - mount -vt sysfs sysfs $LFS/sys
+   - mount -vt tmpfs tmpfs $LFS/run
