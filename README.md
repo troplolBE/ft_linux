@@ -20,3 +20,7 @@ Checklist before starting LFS on a VM:
 - You have _**SSH**_ connection to your VM (**important, will make life easier aftewards**)
 - No need for a graphical interface on the host system
 - You have access to root user (**important**)
+- When rebooting you need to remount your 2 partitions and activiate the swap partition:
+   - mount -v -t ext4 /dev/<xxx> $LFS (mount lfs partition)
+   - /sbin/swapon /dev/<xxx> (mount swap partition)
+   - mount -v -t vfat /dev/<xxx> $LFS/boot (mount boot partition)
