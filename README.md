@@ -21,7 +21,19 @@ Checklist before starting LFS on a VM:
 - No need for a graphical interface on the host system
 - You have access to root user (**important**)
 
-Useful commands when rebooting dureing LFS:
+Partition disk:
+- Install parted
+- `parted -a optimal /dev/<xxx>`
+- `unit mib`
+- `mkpart primary 1 129`
+- `name 1 boot`
+- `mkpart primary 129 4225`
+- `name 2 swap`
+- `mkpart primary 4225 -1`
+- `name 3 root`
+- `set 1 boot on`
+
+Useful commands when rebooting during LFS:
 - When rebooting after Chapter 2:
    - `mount -v -t ext4 /dev/<xxx> $LFS` (mount lfs partition)
    - `/sbin/swapon /dev/<xxx>` (mount swap partition)
