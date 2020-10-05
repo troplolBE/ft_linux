@@ -24,6 +24,7 @@ Checklist before starting LFS on a VM:
 Partition disk:
 - Install parted
 - `parted -a optimal /dev/<xxx>`
+- `mklabel gpt`
 - `unit mib`
 - `mkpart primary 1 129`
 - `name 1 boot`
