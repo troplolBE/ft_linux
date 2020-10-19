@@ -34,6 +34,11 @@ Partition disk:
 - `name 3 root`
 - `set 1 boot on`
 
+Give partitions a type:
+- `mkfs.fat -F32 /dev/sdb1`
+- `mkswap /dev/sdb2`
+- `mkfs.ext4 /dev/sdb3`
+
 Useful commands when rebooting during LFS:
 - When rebooting after Chapter 2:
    - `mount -v -t ext4 /dev/<xxx> $LFS` (mount lfs partition)
