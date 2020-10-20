@@ -53,7 +53,7 @@ mount -vt proc proc $LFS/proc
 mount -vt sysfs sysfs $LFS/sys
 mount -vt tmpfs tmpfs $LFS/run
 ```
-   - To enter Chroot environment
+   - To enter Chroot environment:
 ```
 chroot "$LFS" /usr/bin/env -i   \
     HOME=/root                  \
@@ -62,4 +62,13 @@ chroot "$LFS" /usr/bin/env -i   \
     PATH=/bin:/usr/bin:/sbin:/usr/sbin \
     MAKEFLAGS='-j4' \
     /bin/bash --login +h
+```
+- When rebooting after chapter 8:
+```
+chroot "$LFS" /usr/bin/env -i          \
+    HOME=/root TERM="$TERM"            \
+    PS1='(lfs chroot) \u:\w\$ '        \
+    PATH=/bin:/usr/bin:/sbin:/usr/sbin \
+    MAKEFLAGS='-j4' \
+    /bin/bash --login
 ```
