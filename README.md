@@ -41,9 +41,9 @@ Give partitions a type:
 
 Useful commands when rebooting during LFS:
 - When rebooting after Chapter 2:
-   - `mount -v -t ext4 /dev/<xxx> $LFS` (mount lfs partition)
-   - `/sbin/swapon /dev/<xxx>` (mount swap partition)
-   - `mount -v -t vfat /dev/<xxx> $LFS/boot` (mount boot partition)
+   - `mount -v -t ext4 /dev/sdb3 $LFS` (mount lfs partition)
+   - `/sbin/swapon /dev/sdb2` (mount swap partition)
+   - `mount -v -t vfat /dev/sdb1 $LFS/boot` (mount boot partition)
 - When rebooting after Chapter 7:
    - `mount -v --bind /dev $LFS/dev`
    - These commands too:
@@ -60,6 +60,6 @@ chroot "$LFS" /usr/bin/env -i   \
     TERM="$TERM"                \
     PS1='(lfs chroot) \u:\w\$ ' \
     PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-    MAKEFLAGS="-j4" \
+    MAKEFLAGS='-j4' \
     /bin/bash --login +h
 ```
