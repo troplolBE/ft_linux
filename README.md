@@ -72,3 +72,5 @@ chroot "$LFS" /usr/bin/env -i          \
     MAKEFLAGS='-j4' \
     /bin/bash --login
 ```
+
+!!! FAUT AJOUTER UNE PARTITION POUR GRUB ABRUTI !!!
