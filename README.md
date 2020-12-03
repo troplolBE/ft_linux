@@ -174,9 +174,9 @@ This distribution will be yours and you will be able to select what is installed
 ## References
 [The Holy Bible](http://www.linuxfromscratch.org/lfs/view/stable/index.html "Linux From Scratch")
 
-[ft_linux_basic.sh](https://intra.42.fr/uploads/document/document/425/ft_linux_basic.sh)
+[ft_linux_basic.sh](https://intra.42.fr/uploads/document/document/426/ft_linux_basic.sh)
 
-[ft_linux_others.sh](https://intra.42.fr/uploads/document/document/426/ft_linux_others.sh)
+[ft_linux_others.sh](https://intra.42.fr/uploads/document/document/425/ft_linux_others.sh)
 
 ## Tips & tricks for LFS
 Checklist before starting LFS on a VM:
