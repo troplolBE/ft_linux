@@ -1,4 +1,4 @@
-# ft_linux
+# ft_linux (LFS 11-Systemd)
 
 ## Description
 First project of the Kernel branch ! The purpose is to create a simple LFS that will be used to create your own Linux distribution on which you will work for the next projects.
@@ -7,6 +7,163 @@ First project of the Kernel branch ! The purpose is to create a simple LFS that 
 The main goal of this project is to create your own very basic linux distribution. You will have chosen all the software you want and can now add whatever you want more for your own distribution. The will also be used in the KFS projects that come next as your base system.
 
 This distribution will be yours and you will be able to select what is installed in what config and with which version.
+
+## References
+[The Holy Bible](http://www.linuxfromscratch.org/lfs/view/stable/index.html "Linux From Scratch")
+
+[ft_linux_basic.sh](https://intra.42.fr/uploads/document/document/426/ft_linux_basic.sh)
+
+[ft_linux_others.sh](https://intra.42.fr/uploads/document/document/425/ft_linux_others.sh)
+
+## Tips & tricks for LFS
+Checklist before starting LFS on a VM:
+- VM has more than one CPU (_if possible_)
+- VM has at least 4Gb of RAM
+- 2 vdi image disks (8Gb for Host, 16Gb for LFS)
+- VM has internet connection (**important**)
+- You have _**SSH**_ connection to your VM (**important, will make life easier aftewards**)
+- No need for a graphical interface on the host system
+- You have access to root user (**important**)
+
+## Important commands to succeed
+
+### Partition disk
+See file [commands.txt](commands.txt) for more explainations
+
+first: `fdisk /dev/sdb`
+
+then: (each line is divided by command and then the input for the questions)
+```shell
+g
+n default default +1M
+t 1 4
+n default default +200M
+t 2 1
+n default default +4G
+t 3 swap
+n default default default
+w
+```
+
+### Create filesystem
+
+```shell
+mkswap /dev/sdb3
+mkfs -v -t ext4 /dev/sdb4
+mkfs -v -t ext2 /dev/sdb2
+```
+
+### LFS variable
+
+```shell
+export LFS=/mnt/lfs
+```
+
+Add this to root and user's .bashrc to make sure variable is always there.
+
+### Mount partitions
+
+First time mounting partitions (and creating the directories)
+```shell
+mkdir -pv $LFS
+mount -v -t ext4 /dev/sdb4 $LFS
+mkdir -pv $LFS/boot
+mount -v -t ext2 /dev/sdb2 $LFS/boot
+/sbin/swapon -v /dev/sdb3
+```
+
+If not the first time you only need to mount the partitions and the swap
+```shell
+mount -v -t ext4 /dev/sdb4 $LFS
+mount -v -t ext2 /dev/sdb2 $LFS/boot
+/sbin/swapon -v /dev/sdb3
+```
+
+Starting from chapter 7.3.3 you also need to mount the following files:
+```shell
+mount -v --bind /dev $LFS/dev
+mount -v --bind /dev/pts $LFS/dev/pts
+mount -vt proc proc $LFS/proc
+mount -vt sysfs sysfs $LFS/sys
+mount -vt tmpfs tmpfs $LFS/run
+if [ -h $LFS/dev/shm ]; then
+  mkdir -pv $LFS/$(readlink $LFS/dev/shm)
+fi
+```
+
+### Entering chroot
+
+For chapter 7 enter the chroot environment using this command:
+```shell
+chroot "$LFS" /usr/bin/env -i   \
+    HOME=/root                  \
+    TERM="$TERM"                \
+    PS1='(lfs chroot) \u:\w\$ ' \
+    PATH=/usr/bin:/usr/sbin     \
+    MAKEFLAGS=-j6               \
+    /bin/bash --login +h
+```
+
+
+
+<!-- Partition disk:
+- Install parted
+- `parted -a optimal /dev/<xxx>`
+- `mklabel gpt`
+- `unit mib`
+- `mkpart primary 1 129`
+- `name 1 boot`
+- `mkpart primary 129 4225`
+- `name 2 swap`
+- `mkpart primary 4225 -1`
+- `name 3 root`
+- `set 1 boot on` -->
+
+<!-- Give partitions a type:
+- `mkfs.fat -F32 /dev/sdb1`
+- `mkswap /dev/sdb2`
+- `mkfs.ext4 /dev/sdb3` -->
+
+<!-- Useful commands when rebooting during LFS:
+- When rebooting after Chapter 2:
+   - `mount -v -t ext4 /dev/sdb3 $LFS` (mount lfs partition)
+   - `/sbin/swapon /dev/sdb2` (mount swap partition)
+   - `mount -v -t vfat /dev/sdb1 $LFS/boot` (mount boot partition) -->
+<!-- - When rebooting after Chapter 7:
+   - `mount -v --bind /dev $LFS/dev`
+   - These commands too:
+```
+mount -v --bind /dev/pts $LFS/dev/pts
+mount -vt proc proc $LFS/proc
+mount -vt sysfs sysfs $LFS/sys
+mount -vt tmpfs tmpfs $LFS/run
+
+if [ -h $LFS/dev/shm ]; then
+  mkdir -pv $LFS/$(readlink $LFS/dev/shm)
+fi
+``` -->
+ <!--   - To enter Chroot environment:
+```
+chroot "$LFS" /usr/bin/env -i   \
+    HOME=/root                  \
+    TERM="$TERM"                \
+    PS1='(lfs chroot) \u:\w\$ ' \
+    PATH=/bin:/usr/bin:/sbin:/usr/sbin \
+    MAKEFLAGS='-j4' \
+    /bin/bash --login +h
+``` -->
+- When rebooting after chapter 8:
+```
+chroot "$LFS" /usr/bin/env -i          \
+    HOME=/root TERM="$TERM"            \
+    PS1='(lfs chroot) \u:\w\$ '        \
+    PATH=/bin:/usr/bin:/sbin:/usr/sbin \
+    MAKEFLAGS='-j4' \
+    /bin/bash --login
+```
+
+!!! FAUT AJOUTER UNE PARTITION POUR GRUB ABRUTI !!!
+
 
 ## Questions
 
@@ -170,78 +327,3 @@ This distribution will be yours and you will be able to select what is installed
    }
 ]
 ```
-
-## References
-[The Holy Bible](http://www.linuxfromscratch.org/lfs/view/stable/index.html "Linux From Scratch")
-
-[ft_linux_basic.sh](https://intra.42.fr/uploads/document/document/426/ft_linux_basic.sh)
-
-[ft_linux_others.sh](https://intra.42.fr/uploads/document/document/425/ft_linux_others.sh)
-
-## Tips & tricks for LFS
-Checklist before starting LFS on a VM:
-- VM has more than one CPU (_if possible_)
-- VM has at least 4Gb of RAM
-- 2 vdi image disks (8Gb for Host, 16Gb for LFS)
-- VM has internet connection (**important**)
-- You have _**SSH**_ connection to your VM (**important, will make life easier aftewards**)
-- No need for a graphical interface on the host system
-- You have access to root user (**important**)
-
-Partition disk:
-- Install parted
-- `parted -a optimal /dev/<xxx>`
-- `mklabel gpt`
-- `unit mib`
-- `mkpart primary 1 129`
-- `name 1 boot`
-- `mkpart primary 129 4225`
-- `name 2 swap`
-- `mkpart primary 4225 -1`
-- `name 3 root`
-- `set 1 boot on`
-
-Give partitions a type:
-- `mkfs.fat -F32 /dev/sdb1`
-- `mkswap /dev/sdb2`
-- `mkfs.ext4 /dev/sdb3`
-
-Useful commands when rebooting during LFS:
-- When rebooting after Chapter 2:
-   - `mount -v -t ext4 /dev/sdb3 $LFS` (mount lfs partition)
-   - `/sbin/swapon /dev/sdb2` (mount swap partition)
-   - `mount -v -t vfat /dev/sdb1 $LFS/boot` (mount boot partition)
-- When rebooting after Chapter 7:
-   - `mount -v --bind /dev $LFS/dev`
-   - These commands too:
-```
-mount -v --bind /dev/pts $LFS/dev/pts
-mount -vt proc proc $LFS/proc
-mount -vt sysfs sysfs $LFS/sys
-mount -vt tmpfs tmpfs $LFS/run
-
-if [ -h $LFS/dev/shm ]; then
-  mkdir -pv $LFS/$(readlink $LFS/dev/shm)
-fi
-```
-   - To enter Chroot environment:
-```
-chroot "$LFS" /usr/bin/env -i   \
-    HOME=/root                  \
-    TERM="$TERM"                \
-    PS1='(lfs chroot) \u:\w\$ ' \
-    PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-    MAKEFLAGS='-j4' \
-    /bin/bash --login +h
-```
-- When rebooting after chapter 8:
-```
-chroot "$LFS" /usr/bin/env -i          \
-    HOME=/root TERM="$TERM"            \
-    PS1='(lfs chroot) \u:\w\$ '        \
-    PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-    MAKEFLAGS='-j4' \
-    /bin/bash --login
-```
-
-!!! FAUT AJOUTER UNE PARTITION POUR GRUB ABRUTI !!!

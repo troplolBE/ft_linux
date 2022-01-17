@@ -1,0 +1,26 @@
+Pour creer le disque qu'on va utiliser pour creer LFS.
+
+On va utiliser fdisk: `fdisk /dev/sdb`
+
+ensuite:
+```shell
+g
+n default default +1M
+t 1 4
+n default default +200M
+t 2 1
+n default default +4G
+t 3 swap
+n default default default
+```
+
+Pour verifier la table: `p`
+
+Pour sauvegarder le disque et le formatter: `w`
+
+Pour creer les systemes de fichiers:
+```
+mkswap /dev/sdb3
+mkfs -v -t ext4 /dev/sdb4
+mkfs -v -t ext2 /dev/sdb2
+```
