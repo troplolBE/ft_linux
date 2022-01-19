@@ -93,7 +93,7 @@ fi
 
 ### Entering chroot
 
-For chapter 7 enter the chroot environment using this command:
+For chapter 7 and 8 enter the chroot environment using this command:
 ```shell
 chroot "$LFS" /usr/bin/env -i   \
     HOME=/root                  \
@@ -102,6 +102,16 @@ chroot "$LFS" /usr/bin/env -i   \
     PATH=/usr/bin:/usr/sbin     \
     MAKEFLAGS=-j6               \
     /bin/bash --login +h
+```
+
+From chapter 8.79 use :
+```shell
+chroot "$LFS" /usr/bin/env -i          \
+    HOME=/root TERM="$TERM"            \
+    PS1='(lfs chroot) \u:\w\$ '        \
+    PATH=/usr/bin:/usr/sbin            \
+    MAKEFLAGS=-j6                      \
+    /bin/bash --login
 ```
 
 
@@ -152,7 +162,7 @@ chroot "$LFS" /usr/bin/env -i   \
     MAKEFLAGS='-j4' \
     /bin/bash --login +h
 ``` -->
-- When rebooting after chapter 8:
+<!-- - When rebooting after chapter 8:
 ```
 chroot "$LFS" /usr/bin/env -i          \
     HOME=/root TERM="$TERM"            \
@@ -161,7 +171,7 @@ chroot "$LFS" /usr/bin/env -i          \
     MAKEFLAGS='-j4' \
     /bin/bash --login
 ```
-
+ -->
 !!! FAUT AJOUTER UNE PARTITION POUR GRUB ABRUTI !!!
 
 
