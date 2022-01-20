@@ -79,7 +79,7 @@ mount -v -t ext2 /dev/sdb2 $LFS/boot
 /sbin/swapon -v /dev/sdb3
 ```
 
-Starting from chapter 7.3.3 you also need to mount the following files:
+Starting from chapter 7.3.3 you also need to mount the following files :
 ```shell
 mount -v --bind /dev $LFS/dev
 mount -v --bind /dev/pts $LFS/dev/pts
@@ -93,7 +93,7 @@ fi
 
 ### Entering chroot
 
-For chapter 7 and 8 enter the chroot environment using this command:
+For chapter 7 and 8 enter the chroot environment using this command :
 ```shell
 chroot "$LFS" /usr/bin/env -i   \
     HOME=/root                  \
@@ -114,65 +114,50 @@ chroot "$LFS" /usr/bin/env -i          \
     /bin/bash --login
 ```
 
+### Configuring the system
 
-
-<!-- Partition disk:
-- Install parted
-- `parted -a optimal /dev/<xxx>`
-- `mklabel gpt`
-- `unit mib`
-- `mkpart primary 1 129`
-- `name 1 boot`
-- `mkpart primary 129 4225`
-- `name 2 swap`
-- `mkpart primary 4225 -1`
-- `name 3 root`
-- `set 1 boot on` -->
-
-<!-- Give partitions a type:
-- `mkfs.fat -F32 /dev/sdb1`
-- `mkswap /dev/sdb2`
-- `mkfs.ext4 /dev/sdb3` -->
-
-<!-- Useful commands when rebooting during LFS:
-- When rebooting after Chapter 2:
-   - `mount -v -t ext4 /dev/sdb3 $LFS` (mount lfs partition)
-   - `/sbin/swapon /dev/sdb2` (mount swap partition)
-   - `mount -v -t vfat /dev/sdb1 $LFS/boot` (mount boot partition) -->
-<!-- - When rebooting after Chapter 7:
-   - `mount -v --bind /dev $LFS/dev`
-   - These commands too:
+/etc/fstab file
 ```
-mount -v --bind /dev/pts $LFS/dev/pts
-mount -vt proc proc $LFS/proc
-mount -vt sysfs sysfs $LFS/sys
-mount -vt tmpfs tmpfs $LFS/run
+/dev/sda4      /            ext4     defaults            1     1
+/dev/sda2      /boot        ext2     defaults            1     1
+/dev/sda3      swap         swap     pri=1               0     0
+```
 
-if [ -h $LFS/dev/shm ]; then
-  mkdir -pv $LFS/$(readlink $LFS/dev/shm)
-fi
-``` -->
- <!--   - To enter Chroot environment:
+### Configuration du kernel
+
+To configure the kernel right you have to enable and disable all the asked options. The option to add your login to the kernel name is `local version` and you nee to put `-login` and replace login with your login. Do not remove the dash or it will not render properly.
+
+You should also run the `make defconfig` before you run the `make menuconfig` command. This will do most of the work for you.
+
+When copying the files to the boot directory, you need to modif the command for the vmlinuz to use your login. It should look like this :
+```shell
+cp -iv arch/x86/boot/bzImage /boot/vmlinuz-5.13.12-login
 ```
-chroot "$LFS" /usr/bin/env -i   \
-    HOME=/root                  \
-    TERM="$TERM"                \
-    PS1='(lfs chroot) \u:\w\$ ' \
-    PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-    MAKEFLAGS='-j4' \
-    /bin/bash --login +h
-``` -->
-<!-- - When rebooting after chapter 8:
+
+again replace above login with your login.
+
+### Configuring grub
+
+Install grub on the right disk :
+```shell
+grub-install /dev/sdb
 ```
-chroot "$LFS" /usr/bin/env -i          \
-    HOME=/root TERM="$TERM"            \
-    PS1='(lfs chroot) \u:\w\$ '        \
-    PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-    MAKEFLAGS='-j4' \
-    /bin/bash --login
+
+To configure grub to boot the right parition and the right file. Put this in the /boot/grub/grub.cfg file :
+```grub
+# Begin /boot/grub/grub.cfg
+set default=0
+set timeout=5
+
+insmod ext2
+set root=(hd0,2)
+
+menuentry "GNU/Linux, Linux 5.13.12-yourlogin" {
+        linux   /vmlinuz-5.13.12-yourlogin root=/dev/sda4 ro
+}
 ```
- -->
-!!! FAUT AJOUTER UNE PARTITION POUR GRUB ABRUTI !!!
+
+Again, replace yourlogin with you login. It is crucial here that for the line starting with 'linux' you use the right name of the vmlinuz file. If this is not right your lfs will not boot.
 
 
 ## Questions
