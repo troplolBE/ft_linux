@@ -28,7 +28,7 @@ Checklist before starting LFS on a VM:
 ## Important commands to succeed
 
 ### Partition disk
-See file [commands.txt](commands.txt) for more explainations
+See file [commandes.txt](commandes.txt) for more explainations
 
 first: `fdisk /dev/sdb`
 
